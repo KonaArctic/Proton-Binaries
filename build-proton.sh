@@ -42,6 +42,7 @@ if [[ $github ]] ; then
 	sed --in-place=.bak --expression="s|focal|groovy|g" /etc/apt/sources.list # force newer repo for afdko
 	export DEBIAN_FRONTEND=noninteractive
 	apt-get update
+	apt-get --yes dist-upgrade
 	apt-get --yes install --no-install-recommends \
 		git ca-certificates wget docker.io fontforge rsync afdko make xz-utils patch autoconf gzip tar coreutils
 fi
