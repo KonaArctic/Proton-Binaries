@@ -29,6 +29,8 @@ done
 # Testing
 cd `mktemp -d`
 git clone $repo `pwd`
+git config user.email "arcticjieer@gmail.com"
+git config user.name "Kona Arctic"
 true 1> testing.tar.xz
 git add testing.tar.xz
 git commit --message="testing" testing.tar.xz
