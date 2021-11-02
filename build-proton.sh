@@ -5,7 +5,7 @@ IFS=
 PATH=$HOME/.exec:$PATH
 
 # Arguments
-tags= ; repo="https://$GITHUB_TOKEN@github.com/KonaArctic/Valve-Proton-Binaries.git" ; temp=/tmp ; force= ; github= 
+tags= ; repo="https://$GITHUB_TOKEN@github.com/KonaArctic/Valve-Proton-Binaries.git" ; temp=/tmp ; force= ; apts= 
 for item in $* ; do
 	if [[ $item =~ ^-?-?version ]] ; then
 		echo "0.0"
@@ -18,8 +18,8 @@ for item in $* ; do
 		temp=${item#*=}
 	elif [[ $item =~ ^-?-?force$ ]] ; then
 		force=true
-	elif [[ $item =~ ^-?-?github$ ]] ; then
-		github=true
+	elif [[ $item =~ ^-?-?apts$ ]] ; then
+		apts=true
 	else
 		echo "F I dont know what $item means" 1>&2
 		exit 80
@@ -38,7 +38,7 @@ if [[ `whoami` != root ]] ; then
 fi
 
 # Get dependencies
-if [[ $github ]] ; then
+if [[ $apts ]] ; then
 	sed --in-place=.bak --expression="s|focal|groovy|g" /etc/apt/sources.list # force newer repo for afdko
 	export DEBIAN_FRONTEND=noninteractive
 	apt-get update
@@ -78,7 +78,7 @@ read -t 20 <> <( true ) ||
 #	wait $dock
 
 # Build!
-sh proton/configure.sh --build-name=$tags --container-engine=docker #--no-proton-sdk
+bash proton/configure.sh --build-name=$tags --container-engine=docker #--no-proton-sdk
 make redist
 
 # Package
