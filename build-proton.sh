@@ -5,7 +5,7 @@ IFS=
 PATH=$HOME/.exec:$PATH
 
 # Arguments
-tags= ; repo="https://$GITHUB_TOKEN@github.com/KonaArctic/Valve-Proton-Binaries.git" ; temp=/tmp ; force= ; apts= 
+tags= ; repo="https://KonaArctic:$GITHUB_TOKEN@github.com/KonaArctic/Valve-Proton-Binaries.git" ; temp=/tmp ; force= ; apts= 
 for item in $* ; do
 	if [[ $item =~ ^-?-?version ]] ; then
 		echo "0.0"
