@@ -74,8 +74,8 @@ dockerd &
 dock=$!
 read -t 20 <> <( true ) ||
 	true
-kill -0 $dock 2> devnull ||
-	wait $dock
+#kill -0 $dock 2> devnull ||
+#	wait $dock
 
 # Build!
 sh proton/configure.sh --build-name=$tags --container-engine=docker #--no-proton-sdk
