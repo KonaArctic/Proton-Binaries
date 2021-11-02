@@ -39,7 +39,7 @@ fi
 
 # Get dependencies
 if [[ $github ]] ; then
-	sed --in-place=.bak --expression="s|focal|hirsute|g" /etc/apt/sources.list # force newer repo
+	sed --in-place=.bak --expression="s|focal|groovy|g" /etc/apt/sources.list # force newer repo for afdko
 	export DEBIAN_FRONTEND=noninteractive
 	apt-get update
 	apt-get --yes install --no-install-recommends \
