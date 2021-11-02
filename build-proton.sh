@@ -44,7 +44,7 @@ if [[ $apts ]] ; then
 	apt-get update
 	apt-get --yes dist-upgrade
 	apt-get --yes install --no-install-recommends \
-		git ca-certificates wget docker.io fontforge rsync afdko make xz-utils patch autoconf gzip tar coreutils
+		git ca-certificates wget fontforge rsync afdko make xz-utils patch autoconf gzip tar coreutils #docker.io
 fi
 
 # Enviorment
