@@ -86,9 +86,9 @@ make redist
 	gzip --decompress redist/proton_dist.tar.gz
 tar --create --file=$tags.tar --group=kona --owner=kona --portability --transform 's|^redist/*||' redist
 xz --compress --force --best --extreme --verbose --check=none --memory=max --threads=0 $tags.tar
-git -C repo add $tags.tar.xz
-git -C repo commit --message="Built $tags" $tags.tar.xz
-git -C repo push
+git add $tags.tar.xz
+git commit --message="Built $tags" $tags.tar.xz
+git push
 
 # Cleanup
 make clean
