@@ -26,8 +26,13 @@ done
 
 # Must be root
 if [[ `whoami` != root ]] ; then
-	sudo --preserve-env -- bash $HOME/.exec/build-proton $*
-	exit $?
+	if command -v sudo | read ; then
+		sudo --preserve-env -- bash $0 $*
+		exit $?
+	else
+		echo "F must be root" 1>&2
+		exit 60
+	fi
 fi
 
 # Get enviorment
