@@ -3,9 +3,9 @@
 # Valve Proton Binaries
 What's This?
 ------------
-Proton is a compatibility layer lets Linux users play Windows games. If you use the Steam client then you already have Proton. I don't use the Steam client.
+In this repository are unofficial binary builds of Proton; made using Github Actions and Docker.
 
-In this repository are binary builds of Proton; made using Github Actions and Docker.
+Proton is a compatibility layer lets Linux users play Windows games. If you use the Steam client then you already have Proton. I don't use the Steam client.
 
 See [here](https://github.com/ValveSoftware/Proton) for details.
 
