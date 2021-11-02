@@ -26,6 +26,19 @@ for item in $* ; do
 	fi
 done
 
+# Testing
+tags=proton
+cd `mktemp -d`
+git clone $repo `pwd`
+git config user.email "arcticjieer@gmail.com"
+git config user.name "Kona Arctic"
+head --bytes=$(( 201 * 1024 ** 2 )) /dev/urandom 1> $tags.tar.xz
+split --suffix-length=4 --bytes=$(( 100 * 1024 ** 2 )) --numeric-suffixes=0000 $tags.tar.xz $tags.tar.xz
+git add $tags.tar.xz[0-9a-fA-F]*
+git commit --message="Built $tags" $tags.tar.xz[0-9a-fA-F]*
+git push
+exit
+
 # Must be root
 if [[ `whoami` != root ]] ; then
 	if command -v sudo | read ; then
@@ -88,8 +101,9 @@ make redist
 	gzip --decompress redist/proton_dist.tar.gz
 tar --create --file=$tags.tar --group=kona --owner=kona --portability --transform 's|^redist/*||' redist
 xz --compress --force --best --extreme --verbose --check=none --memory=max --threads=0 $tags.tar
-git add $tags.tar.xz
-git commit --message="Built $tags" $tags.tar.xz
+split --suffix-length=4 --bytes=$(( 100 * 1024 ** 2 )) --numeric-suffixes=0000 $tags.tar.xz $tags.tar.xz
+git add $tags.tar.xz[0-9a-fA-F]*
+git commit --message="Built $tags" $tags.tar.xz[0-9a-fA-F]*
 git push
 
 # Cleanup
