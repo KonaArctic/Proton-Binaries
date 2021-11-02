@@ -26,19 +26,6 @@ for item in $* ; do
 	fi
 done
 
-# Testing
-tags=proton
-cd `mktemp -d`
-git clone $repo `pwd`
-git config user.email "arcticjieer@gmail.com"
-git config user.name "Kona Arctic"
-head --bytes=$(( 201 * 1024 ** 2 )) /dev/urandom 1> $tags.tar.xz
-split --suffix-length=4 --bytes=$(( 100 * 1024 ** 2 )) --numeric-suffixes=0000 $tags.tar.xz $tags.tar.xz
-git add $tags.tar.xz[0-9a-fA-F]*
-git commit --message="Built $tags" $tags.tar.xz[0-9a-fA-F]*
-git push
-exit
-
 # Must be root
 if [[ `whoami` != root ]] ; then
 	if command -v sudo | read ; then
