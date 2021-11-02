@@ -25,5 +25,5 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Build Proton
-        run: bash build-proton.sh repo=https://${{ secrets.GITHUB_TOKEN }}@github.com/KonaArctic/Valve-Proton-Binaries.git
+        run: bash build-proton.sh github repo=https://${{ secrets.GITHUB_TOKEN }}@github.com/KonaArctic/Valve-Proton-Binaries.git
 
