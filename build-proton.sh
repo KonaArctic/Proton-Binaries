@@ -26,16 +26,6 @@ for item in $* ; do
 	fi
 done
 
-# Testing
-cd `mktemp -d`
-git clone $repo `pwd`
-git config user.email "arcticjieer@gmail.com"
-git config user.name "Kona Arctic"
-true 1> testing.tar.xz
-git add testing.tar.xz
-git commit --message="testing" testing.tar.xz
-git push
-
 # Must be root
 if [[ `whoami` != root ]] ; then
 	if command -v sudo | read ; then
@@ -62,6 +52,8 @@ temp=$temp/kona-$$
 mkdir $temp
 cd $temp
 git clone $repo `pwd`
+git config user.email "arcticjieer@gmail.com"
+git config user.name "Kona Arctic"
 git clone --recurse-submodules https://github.com/ValveSoftware/Proton.git proton
 
 # Find latest tags
