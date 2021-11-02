@@ -5,7 +5,7 @@ IFS=
 PATH=$HOME/.exec:$PATH
 
 # Arguments
-tags= ; repo="https://$GITHUB_TOKEN@github.com/KonaArctic/Valve-Proton-Binaries.git" ; temp=/tmp ; force=
+tags= ; repo="https://$GITHUB_TOKEN@github.com/KonaArctic/Valve-Proton-Binaries.git" ; temp=/tmp ; force= ; github= 
 for item in $* ; do
 	if [[ $item =~ ^-?-?version ]] ; then
 		echo "0.0"
@@ -18,6 +18,8 @@ for item in $* ; do
 		temp=${item#*=}
 	elif [[ $item =~ ^-?-?force$ ]] ; then
 		force=true
+	elif [[ $item =~ ^-?-?github$ ]] ; then
+		github=true
 	else
 		echo "F I dont know what $item means" 1>&2
 		exit 80
@@ -35,11 +37,16 @@ if [[ `whoami` != root ]] ; then
 	fi
 fi
 
-# Get enviorment
-export DEBIAN_FRONTEND=noninteractive
-apt-get update
-apt-get --yes install --no-install-recommends \
-	git ca-certificates wget docker.io fontforge rsync afdko make xz-utils patch autoconf gzip tar coreutils
+# Get dependencies
+if [[ $github ]] ; then
+	sed --in-place=.bak --expression="s|focal|hirsute|g" /etc/apt/sources.list # force newer repo
+	export DEBIAN_FRONTEND=noninteractive
+	apt-get update
+	apt-get --yes install --no-install-recommends \
+		git ca-certificates wget docker.io fontforge rsync afdko make xz-utils patch autoconf gzip tar coreutils
+fi
+
+# Enviorment
 temp=$temp/kona-$$
 mkdir $temp
 cd $temp
