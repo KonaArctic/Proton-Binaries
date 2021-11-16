@@ -25,7 +25,8 @@ jobs:
 
       # Checks for existing buils
       - name: Check Latest
-        run: [[ ! -f `wget --output-document=- --quiet https://api.github.com/repos/ValveSoftware/Proton/releases/latest | grep --regexp=proton-\[^\"]+ --only-matching --max-count=1 --extended-regex `.tar.xz0000 ]]
+        run: exit 1
+#        run: [[ ! -f `wget --output-document=- --quiet https://api.github.com/repos/ValveSoftware/Proton/releases/latest | grep --regexp=proton-\[^\"]+ --only-matching --max-count=1 --extended-regex `.tar.xz0000 ]]
 
       # Runs a single command using the runners shell
       - name: Build Proton
