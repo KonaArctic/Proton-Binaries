@@ -25,9 +25,10 @@ jobs:
 
       # Checks for existing buils
       - name: Check Latest
-        run: bash -c '[[ ! -f `wget --output-document=- --quiet https://api.github.com/repos/ValveSoftware/Proton/releases/latest | grep --regexp=proton-\[^\"]+ --only-matching --max-count=1 --extended-regex `.tar.xz0000 ]]'
+        run: bash -c '[[ -f `wget --output-document=- --quiet https://api.github.com/repos/ValveSoftware/Proton/releases/latest | grep --regexp=proton-\[^\"]+ --only-matching --max-count=1 --extended-regex `.tar.xz0000 ]]'
 
       # Runs a single command using the runners shell
-      - name: Build Proton
+      - if: failure( )
+        name: Build Proton
         run: bash build-proton.sh apts repo=https://KonaArctic:${{ secrets.GITHUB_TOKEN }}@github.com/KonaArctic/Valve-Proton-Binaries.git
 
