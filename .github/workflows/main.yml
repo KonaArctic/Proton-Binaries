@@ -23,6 +23,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      # Checks for existing buils
+      - name: Check Latest
+        run: [[ ! -f `wget --output-document=- --quiet https://api.github.com/repos/ValveSoftware/Proton/releases/latest | grep --regexp=proton-\[^\"]+ --only-matching --max-count=1 --extended-regex `.tar.xz0000 ]]
+
       # Runs a single command using the runners shell
       - name: Build Proton
         run: bash build-proton.sh apts repo=https://KonaArctic:${{ secrets.GITHUB_TOKEN }}@github.com/KonaArctic/Valve-Proton-Binaries.git
