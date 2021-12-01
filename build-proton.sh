@@ -44,7 +44,7 @@ if [[ $apts ]] ; then
 	apt-get update
 	apt-get --yes dist-upgrade
 	apt-get --yes install --no-install-recommends \
-		git ca-certificates wget fontforge rsync afdko make xz-utils patch autoconf gzip tar coreutils #docker.io
+		git ca-certificates wget fontforge rsync afdko make xz-utils patch autoconf gzip tar coreutils podman crun #docker.io
 fi
 
 # Enviorment
@@ -80,7 +80,7 @@ read -t 20 <> <( true ) ||
 #	wait $dock
 
 # Build!
-bash proton/configure.sh --build-name=$tags --container-engine=docker #--no-proton-sdk
+bash proton/configure.sh --build-name=kona-$tags --container-engine=podman #--no-proton-sdk
 make redist
 
 # Package
