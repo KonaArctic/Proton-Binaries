@@ -1,0 +1,43 @@
+name: Build Proton
+on:
+    push:
+       branches: [ "main" ]
+    workflow_dispatch:
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v3
+            -   name: Workaround
+                run: |  # https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
+                    sudo rm -rf /usr/share/dotnet
+                    sudo rm -rf /opt/ghc
+                    sudo rm -rf "/usr/local/share/boost"
+                    sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+            -   name: Clone
+                run: |
+                    git clone --recurse-submodules https://github.com/ValveSoftware/Proton.git proton
+            -   name: Get name
+                id: name
+                run: |
+                    {   printf p=
+                        git -C proton tag |
+                        grep --extended --regexp="^proton-[0-9]+\.[0-9]+" |
+                        tail --lines=1 
+                    } >> $GITHUB_OUTPUT
+            -   name: Build
+                run: |
+                    git -C proton checkout ${{ steps.name.outputs.p }}
+                    git -C proton submodule update --init --recursive
+                    bash proton/configure.sh --build-name=${{ steps.name.outputs.p }}/kona
+                    make redist
+                    tar --create --group=kona --owner=kona --portability --transform="s|^redist|${{ steps.name.outputs.p }}|" redist |
+                    xz --compress -9 --extreme --check=none --memory=max --threads=0 > ${{ steps.name.outputs.p }}
+            -   name: Upload
+                uses: svenstaro/upload-release-action@v2
+                with:
+                    file: ${{ steps.name.outputs.p }}
+                    release_name: ${{ steps.name.outputs.p }}
+                    body: |
+                        http://github.com/ValveSoftware/Proton/releases/tag/${{ steps.name.outputs.p }}
+
