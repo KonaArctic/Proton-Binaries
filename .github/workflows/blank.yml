@@ -8,7 +8,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@v3
-            -   name: Workaround
+            -   name: Workaround for disk space
                 run: |  # https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
                     sudo rm -rf /usr/share/dotnet
                     sudo rm -rf /opt/ghc
@@ -17,14 +17,11 @@ jobs:
             -   name: Clone
                 run: |
                     git clone --recurse-submodules https://github.com/ValveSoftware/Proton.git proton
-            -   name: Get name
+            -   name: Latest release
                 id: name
                 run: |
-                    {   printf p=
-                        git -C proton tag |
-                        grep --extended --regexp="^proton-[0-9]+\.[0-9]+" |
-                        tail --lines=1 
-                    } >> $GITHUB_OUTPUT
+                    [[ `curl https://api.github.com/repos/ValveSoftware/Proton/releases\?per_page=1` =~ \"tag_name\":\ ?\"([^\"]+) ]]
+                    echo p=${BASH_REMATCH[1]} >> $GITHUB_OUTPUT
             -   name: Build
                 run: |
                     git -C proton checkout ${{ steps.name.outputs.p }}
