@@ -8,7 +8,7 @@ IFS=
 		remote \\
 		show \\
 		origin
-` =~ (git@github.com:|https://github.com/)([^/]+)/([^/]+)\.git ]]
+` =~ (git@github.com:|https://github.com/)([^/]+)/([^/]+) ]]
 usernm=${BASH_REMATCH[2]}
 reponm=${BASH_REMATCH[3]}
 [[ `	curl \\
