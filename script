@@ -1,0 +1,89 @@
+#!/bin/bash
+set \
+	-o errexit \
+	-o pipefail \
+	-o xtrace
+IFS=
+[[ `	git \\
+		remote \\
+		show \\
+		origin
+` =~ (git@github.com:|https://github.com/)([^/]+)/([^/]+)\.git ]]
+usernm=${BASH_REMATCH[2]}
+reponm=${BASH_REMATCH[3]}
+[[ `	curl \\
+		--fail \\
+		--location \\
+		--verbose \\
+		--header Accept:\ application/vnd.github+json \\
+		--header X-GitHub-Api-Version:\\ 2022-11-28 \\
+		https://api.github.com/repos/ValveSoftware/Proton/releases/latest
+` =~ \"tag_name\":\ ?\"([^\"]+)\"\, ]]
+latest=${BASH_REMATCH[1]}
+if	curl \
+		--fail \
+		--location \
+		--verbose \
+		https://api.github.com/repos/repos/$usernm/$reponm/releases/tags/$latest
+then
+	exit 0
+else
+	if [[ $? != 22 ]]
+	then
+		exit 1
+	fi
+fi
+git \
+    	clone \
+    	--recurse-submodules \
+    	https://github.com/ValveSoftware/Proton
+git \
+	-C Proton \
+	checkout \
+	$latest
+bash \
+	Proton/configure.sh \
+	--build-name=$latest/kona
+make \
+	redist
+{	cd \
+		redist
+	tar \
+		--create \
+		--format=posix \
+		--group=kona \
+		--owner=kona \
+		* 
+} |
+xz \
+	-9 \
+	--compress \
+	--memlimit-compress=8G \
+	--threads=0 \
+	--verbose \
+	> $latest.tar.xz
+[[ `	curl \\
+		--fail \\
+		--location \\
+		--verbose \\
+		--header Accept:\\ application/vnd.github+json \\
+		--header Authorization:\\ Bearer\\ \$GITHUB_TOKEN \\
+		--header Content-Type:\\ application/json \\
+		--header X-GitHub-Api-Version:\\ 2022-11-28 \\
+		https://api.github.com/repos/\$usernm/\$reponm/releases \\
+		--data \\{\\
+\\	\\	\\	\"tag_name\"\\ :\\ \"\$latest\"\\ ,\\
+\\	\\	\\	\"name\"\\ :\\ \"\$latest\"\\ ,\\
+\\	\\	\\	\"body\"\\ :\\ \"https://github.com/ValveSoftware/Proton/releases/tag/\$latest\"\\
+\\	\\	\\}
+` =~ \"url\":\ ?\"https://api.github.com/repos/([^/]+)/([^/]+)/releases/([0-9]+)\" ]]
+curl \
+	--fail \
+	--location \
+	--verbose \
+	--header Authorization:\ Bearer\ $GITHUB_TOKEN \
+	--header Content-Type:\ application/octet-stream \
+	--header X-GitHub-Api-Version:\ 2022-11-28 \
+	https://uploads.github.com/repos/$usernm/$reponm/releases/${BASH_REMATCH[3]}/assets\?name=$latest.tar.xz \
+	--data-binary @$latest.tar.xz
+

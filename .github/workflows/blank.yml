@@ -14,27 +14,6 @@ jobs:
                     sudo rm -rf /opt/ghc
                     sudo rm -rf "/usr/local/share/boost"
                     sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-            -   name: Clone
-                run: |
-                    git clone --recurse-submodules https://github.com/ValveSoftware/Proton.git proton
-            -   name: Latest release
-                id: name
-                run: |
-                    [[ `curl https://api.github.com/repos/ValveSoftware/Proton/releases\?per_page=1` =~ \"tag_name\":\ ?\"([^\"]+) ]]
-                    echo p=${BASH_REMATCH[1]} >> $GITHUB_OUTPUT
             -   name: Build
-                run: |
-                    git -C proton checkout ${{ steps.name.outputs.p }}
-                    git -C proton submodule update --init --recursive
-                    bash proton/configure.sh --build-name=${{ steps.name.outputs.p }}/kona
-                    make redist
-                    tar --create --group=kona --owner=kona --portability --transform="s|^redist|${{ steps.name.outputs.p }}|" redist |
-                    xz --compress -9 --extreme --check=none --memory=max --threads=0 > ${{ steps.name.outputs.p }}
-            -   name: Upload
-                uses: svenstaro/upload-release-action@v2
-                with:
-                    file: ${{ steps.name.outputs.p }}
-                    release_name: ${{ steps.name.outputs.p }}
-                    body: |
-                        http://github.com/ValveSoftware/Proton/releases/tag/${{ steps.name.outputs.p }}
+                run: bash script
 
