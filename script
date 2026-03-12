@@ -24,7 +24,7 @@ if	curl \
 		--fail \
 		--location \
 		--verbose \
-		--header X-GitHub-Api-Version:\\ 2022-11-28 \
+		--header X-GitHub-Api-Version:\ 2022-11-28 \
 		https://api.github.com/repos/repos/$usernm/$reponm/releases/tags/$latest
 then
 	exit 0
@@ -53,7 +53,7 @@ bash \
 	--build-name=$latest/kona
 make \
 	redist
-{	cd \
+(	cd \
 		redist
 	tar \
 		--create \
@@ -61,7 +61,7 @@ make \
 		--group=kona \
 		--owner=kona \
 		* 
-} > $latest.tar
+) > $latest.tar
 xz \
 	-9 \
 	--compress \
