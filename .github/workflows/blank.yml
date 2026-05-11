@@ -9,7 +9,7 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
-            -   uses: actions/checkout@v4
+            -   uses: actions/checkout@v6
             -   name: Workaround for disk space
                 run: |  # https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
                     sudo rm -rf /usr/share/dotnet
